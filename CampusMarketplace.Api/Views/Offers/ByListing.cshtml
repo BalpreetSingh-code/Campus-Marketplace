@@ -1,0 +1,64 @@
+@model IEnumerable<Offer>
+
+@{
+    ViewData["Title"] = "Offers for Listing";
+    var listing = ViewData["Listing"] as Listing;
+}
+
+<h1>Offers for: @listing?.Title</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Buyer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OfferedPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Buyer!.Email)
+                </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.OfferedPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    @if (item.Status == "Pending")
+                    {
+                        <form asp-action="Accept" asp-route-id="@item.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                        </form>
+                        <form asp-action="Reject" asp-route-id="@item.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="Listings" asp-action="Index" class="btn btn-secondary">Back to Listings</a>
+</div>
+

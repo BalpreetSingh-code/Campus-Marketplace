@@ -1,0 +1,71 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Listing)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Listing!.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Buyer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Buyer!.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OrderDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+    </dl>
+</div>
+<div>
+    @if ((User.IsInRole("Seller") || User.IsInRole("Admin")) && Model.Status == "Pending" && Model.Listing != null)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var isAdmin = User.IsInRole("Admin");
+        var isSeller = Model.Listing.SellerId == userId;
+        @if (isAdmin || isSeller)
+        {
+            <form asp-action="Accept" asp-route-id="@Model.Id" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">Accept Order</button>
+            </form>
+        }
+    }
+    @if (User.IsInRole("Buyer") && Model.Status == "Accepted")
+    {
+        <form asp-action="Complete" asp-route-id="@Model.Id" method="post" class="d-inline">
+            <button type="submit" class="btn btn-success">Mark Complete</button>
+        </form>
+    }
+    @if (User.IsInRole("Buyer") && (Model.Status == "Accepted" || Model.Status == "Completed") && Model.Review == null)
+    {
+        <a asp-controller="Reviews" asp-action="Create" asp-route-orderId="@Model.Id" class="btn btn-primary">Leave Review</a>
+    }
+    @if (User.IsInRole("Buyer"))
+    {
+        <a asp-action="MyOrders" class="btn btn-secondary">Back to My Orders</a>
+    }
+    else if (User.IsInRole("Seller") || User.IsInRole("Admin"))
+    {
+        <a asp-action="MySellerOrders" class="btn btn-secondary">Back to My Seller Orders</a>
+    }
+</div>
+

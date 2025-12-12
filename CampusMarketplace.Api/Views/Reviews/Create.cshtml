@@ -1,0 +1,41 @@
+@model Review
+
+@{
+    ViewData["Title"] = "Create Review";
+    var order = ViewData["Order"] as Order;
+}
+
+<h1>Create Review</h1>
+
+<h4>Review for Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Reviews" asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="OrderId" />
+            <div class="form-group mb-3">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" type="number" min="1" max="5" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Comment" class="control-label"></label>
+                <textarea asp-for="Comment" class="form-control"></textarea>
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Orders" asp-action="MyOrders" class="btn btn-secondary">Back to Orders</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

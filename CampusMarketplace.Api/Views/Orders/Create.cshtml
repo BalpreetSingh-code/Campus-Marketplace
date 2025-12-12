@@ -1,0 +1,35 @@
+@model Order
+
+@{
+    ViewData["Title"] = "Create Order";
+    var listing = ViewData["Listing"] as Listing;
+}
+
+<h1>Create Order</h1>
+
+<h4>Order for: @listing?.Title</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Orders" asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="ListingId" value="@((ViewData["Listing"] as Listing)?.Id)" />
+            <div class="form-group mb-3">
+                <label class="control-label">Price</label>
+                <input type="text" class="form-control" value="$@listing?.Price" readonly />
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Create Order" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Listings" asp-action="Index" class="btn btn-secondary">Back to Listings</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
